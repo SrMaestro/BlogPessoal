@@ -1,30 +1,38 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Postagem } from "../entities/postagem.entity";
-import { Repository } from "typeorm";
+import { ILike, Repository } from "typeorm";
 
 @Injectable()
 export class PostagemService {
-     constructor(
-        @InjectRepository(Postagem)
-       private postagemRepository : Repository<Postagem> 
-     ){}
+   constructor(
+      @InjectRepository(Postagem)
+      private postagemRepository: Repository<Postagem>
+   ) { }
 
-     async findAll(): Promise<Postagem[]>{
-        return await this.postagemRepository.find();
-     }
+   async findAll(): Promise<Postagem[]> {
+      return await this.postagemRepository.find();
+   }
 
-     async findById (id:number):Promise<Postagem>{
+   async findById(id: number): Promise<Postagem> {
 
       const postagem = await this.postagemRepository.findOne({
-         where:{
+         where: {
             id
          }
       });
 
-      if (!postagem) 
+      if (!postagem)
          throw new HttpException('Postagem nao encontrada', HttpStatus.NOT_FOUND)
-      
+
       return postagem;
-     }
+   }
+
+   async findByTitulo(titulo: string): Promise<Postagem[]> {
+        return await this.postagemRepository.find({
+            where:{
+                titulo: ILike(`%${titulo}%`)
+            }
+        })
+    }
 }
