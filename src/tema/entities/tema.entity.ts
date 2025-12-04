@@ -1,5 +1,6 @@
 import { IsNotEmpty } from "class-validator";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Postagem } from "../../postagem/entities/postagem.entity";
 
 
 // Atraves da notation @Endity estamos mapeando a classe `tema` como um entidade do nosso banco de dados
@@ -12,5 +13,8 @@ export class Tema {
     @IsNotEmpty()// @Atraves dessa notation do `class validation` podemos fazer verificacoes de dados
     @Column({length : 255, nullable : false})
     descricao:string;
+
+     @OneToMany(() => Postagem, (postagem) => postagem.tema)
+    postagem: Postagem[]
 
 }
